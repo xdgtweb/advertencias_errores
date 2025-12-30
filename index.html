@@ -1,141 +1,230 @@
-// Copia y usa este código como el contenido de un nuevo archivo, por ejemplo,
-// src/components/Debug/CheckListErrors.js
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flugpaten Debug Checklist</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 0;
+            margin: 0;
+        }
 
-import React, { useState, useEffect } from 'react';
+        #checklist-container {
+            padding: 20px;
+            max-width: 800px;
+            margin: 40px auto;
+            background-color: #46244C;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
 
-// =========================================================================
-// DEFINICIÓN DE LOS PASOS DEL CHECKLIST
-// =========================================================================
+        h1 {
+            color: #fff;
+            text-align: center;
+            margin-bottom: 20px;
+        }
 
-const DEBUG_STEPS = [
-  // --- Back-end (Resolviendo Errores 500/JSON) ---
-  {
-    id: 'b1',
-    description: 'Añadir método `rutesSenseAdmin` en RolController para obtener roles excluyendo al Admin, implementando `try/catch` para prevenir fallos 500 al llamar a la DB.',
-    file: 'Backend: app/Http/Controllers/RolController.php',
-  },
-  {
-    id: 'b2',
-    description: 'Definir la ruta `GET roles/rutesSenseAdmin` en `routes/api.php` de forma estática y antes de la ruta dinámica `/roles/{nom}`.',
-    file: 'Backend: routes/api.php',
-  },
-  
-  // --- Warnings React Core y Naming Convention ---
-  {
-    id: 'r1',
-    description: 'Corregir anidamiento `ul > a`: En los 3 Sidebars, envolver los `<a>` dentro de etiquetas `<li>` para respetar la estructura HTML (`ul > li > a`).',
-    file: 'NavbarLoginAdmin/sidebar.js, NavbarLoginProtectora/sidebarProtectora.js, NavbarLoginVeterinari/SidebarVeterinari.js',
-  },
-  {
-    id: 'r2',
-    description: 'Evitar GET 404 al inicio: Retirar la llamada inicial `this.checkEmail()` de `componentDidMount` en la página de Registro.',
-    file: 'Registrarse/index.js (Línea 69 aproximadamente)',
-  },
-  {
-    id: 'r3',
-    description: 'Corregir select controlado: En `<FormSelect>`, usar solo la prop `value={this.state...}` y eliminar `defaultValue` si existe.',
-    file: 'Registrarse/index.js, EditaCiutat.js',
-  },
-  
-  // --- Styled Components / DOM Warnings ---
-  {
-    id: 'r4',
-    description: 'Corregir advertencias de props: En `<ButtonSlider>` (Header e InfoSection), pasar props como `primary`, `dark`, `big` como valores numéricos (1 ó 0) en lugar de booleanos directos (`true`/`false`) para evitar warnings en el DOM.',
-    file: 'SliderSection/index.js y InfoSection/index.js',
-  },
-  {
-    id: 'r5',
-    description: 'Corregir Casing: Cambiar la definición de función `dataFetching` a `DataFetching` (PascalCase).',
-    file: 'Fetch/DataFetching.js',
-  },
-];
+        .progress-bar-area {
+            padding: 10px;
+            background-color: #712B75;
+            color: #fff;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-// =========================================================================
-// COMPONENTE PRINCIPAL
-// =========================================================================
+        #clear-button {
+            padding: 8px 12px;
+            background-color: #ac6f82;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
 
-const CheckListErrors = () => {
-  const [checkedItems, setCheckedItems] = useState({});
+        #checklist {
+            border-top: 1px solid #ac6f82;
+            padding-top: 10px;
+        }
 
-  useEffect(() => {
-    // 1. Cargar el estado guardado en localStorage al montar
-    const storedItems = localStorage.getItem('errorCheckList');
-    if (storedItems) {
-      try {
-        setCheckedItems(JSON.parse(storedItems));
-      } catch (e) {
-        // En caso de corrupción del localStorage
-        localStorage.removeItem('errorCheckList');
-      }
-    }
-  }, []);
+        .check-item {
+            margin-bottom: 15px;
+            padding: 12px;
+            border: 1px solid #712B75;
+            border-radius: 6px;
+            background-color: #f8f9fa;
+            transition: all 0.3s;
+        }
 
-  useEffect(() => {
-    // 2. Guardar el estado cada vez que cambia
-    localStorage.setItem('errorCheckList', JSON.stringify(checkedItems));
-  }, [checkedItems]);
+        .check-item.completed {
+            background-color: #d4edda;
+            opacity: 0.9;
+        }
 
-  const handleCheck = (id) => {
-    setCheckedItems(prev => ({
-      ...prev,
-      [id]: !prev[id] // Alternar el estado del item
-    }));
-  };
+        .check-label {
+            display: flex;
+            align-items: flex-start;
+            cursor: pointer;
+            color: #000;
+        }
 
-  const handleClear = () => {
-    // Borrar todo el progreso y reiniciar
-    if (window.confirm("¿Seguro que quieres borrar todo el progreso de la lista?")) {
-        localStorage.removeItem('errorCheckList');
-        setCheckedItems({});
-    }
-  };
+        .check-input {
+            margin-right: 10px;
+            min-width: 20px;
+            min-height: 20px;
+            accent-color: #46244C;
+        }
 
-  const completedCount = Object.values(checkedItems).filter(Boolean).length;
-  const totalCount = DEBUG_STEPS.length;
-  const progressPercentage = Math.round((completedCount / totalCount) * 100);
+        .check-content {
+            flex-grow: 1;
+        }
 
-  return (
-    <div style={{ padding: '20px', maxWidth: '800px', margin: '20px auto', fontFamily: 'Arial, sans-serif', backgroundColor: '#46244C', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0,0,0,0.5)' }}>
-      <h1 style={{ color: '#fff', textAlign: 'center', marginBottom: '20px' }}>Flugpaten Debug Checklist</h1>
-      
-      <div style={{ padding: '10px', backgroundColor: '#712B75', color: '#fff', borderRadius: '4px', marginBottom: '15px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <span>Progreso: {completedCount} de {totalCount} completados ({progressPercentage}%)</span>
-        <button onClick={handleClear} style={{ padding: '8px 12px', backgroundColor: '#ac6f82', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer', fontWeight: 'bold' }}>
-          Reiniciar Checklist
-        </button>
-      </div>
+        .description {
+            margin: 0;
+            font-weight: 600;
+            
+        }
 
-      <div style={{ borderTop: '1px solid #ac6f82', paddingTop: '10px' }}>
-        {DEBUG_STEPS.map(step => (
-          <div key={step.id} style={{ 
-            marginBottom: '15px', 
-            padding: '12px', 
-            border: '1px solid #712B75', 
-            borderRadius: '6px',
-            backgroundColor: checkedItems[step.id] ? '#d4edda' : '#f8f9fa', 
-            opacity: checkedItems[step.id] ? 0.9 : 1
-          }}>
-            <label style={{ display: 'flex', alignItems: 'flex-start', cursor: 'pointer', color: '#000' }}>
-              <input
-                type="checkbox"
-                checked={checkedItems[step.id] || false}
-                onChange={() => handleCheck(step.id)}
-                style={{ marginRight: '10px', minWidth: '20px', minHeight: '20px', accentColor: '#46244C' }}
-              />
-              <div style={{ flexGrow: 1 }}>
-                <p style={{ margin: 0, fontWeight: '600', textDecoration: checkedItems[step.id] ? 'line-through' : 'none' }}>
-                  {step.description}
-                </p>
-                <code style={{ display: 'block', fontSize: '11px', marginTop: '5px', color: '#333' }}>
-                  Archivos: {step.file}
-                </code>
-              </div>
-            </label>
-          </div>
-        ))}
-      </div>
+        .file {
+            display: block;
+            font-size: 11px;
+            margin-top: 5px;
+            color: #333;
+        }
+
+        .description.completed {
+            text-decoration: line-through;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="checklist-container">
+        <h1>Flugpaten Debug Checklist</h1>
+        
+        <div class="progress-bar-area">
+            <span id="progress-text">Progreso: 0 de 0 completados (0%)</span>
+            <button id="clear-button">Reiniciar Checklist</button>
+        </div>
+
+        <div id="checklist">
+            <!-- Items se insertarán aquí por JavaScript -->
+        </div>
     </div>
-  );
-};
 
-export default CheckListErrors;
+    <script>
+        const DEBUG_STEPS = [
+            // --- Back-end (Resolviendo Errores 500/JSON) ---
+            { id: 'b1', description: 'Añadir método `rutesSenseAdmin` en RolController para obtener roles excluyendo al Admin, implementando `try/catch` para prevenir fallos 500 al llamar a la DB.', file: 'Backend: app/Http/Controllers/RolController.php' },
+            { id: 'b2', description: 'Definir la ruta `GET roles/rutesSenseAdmin` en `routes/api.php` de forma estática y antes de la ruta dinámica `/roles/{nom}`.', file: 'Backend: routes/api.php' },
+            
+            // --- Warnings React Core y Naming Convention ---
+            { id: 'r1', description: 'Corregir anidamiento `ul > a`: En los 3 Sidebars, envolver los `<a>` dentro de etiquetas `<li>` para respetar la estructura HTML (`ul > li > a`).', file: 'NavbarLoginAdmin/sidebar.js, NavbarLoginProtectora/sidebarProtectora.js, NavbarLoginVeterinari/SidebarVeterinari.js' },
+            { id: 'r2', description: 'Evitar GET 404 al inicio: Retirar la llamada inicial `this.checkEmail()` de `componentDidMount` en la página de Registro.', file: 'Registrarse/index.js (Línea 69 aproximadamente)' },
+            { id: 'r3', description: 'Corregir error de prop "select": En `<FormSelect>`, usar solo la prop `value={this.state...}` y eliminar `defaultValue` si existe.', file: 'Registrarse/index.js, EditaCiutat.js' },
+            
+            // --- Styled Components / DOM Warnings ---
+            { id: 'r4', description: 'Corregir advertencias de props: En `<ButtonSlider>`, pasar props como `primary`, `dark`, `big` como valores numéricos (1 ó 0) en lugar de booleanos directos (`true`/`false`) para evitar warnings en el DOM.', file: 'SliderSection/index.js y InfoSection/index.js' },
+            { id: 'r5', description: 'Corregir Casing: Cambiar la definición de función `dataFetching` a `DataFetching` (PascalCase).', file: 'Fetch/DataFetching.js' },
+        ];
+
+        const STORAGE_KEY = 'vanillaErrorCheckList';
+        const checklistDiv = document.getElementById('checklist');
+        const progressText = document.getElementById('progress-text');
+        const clearButton = document.getElementById('clear-button');
+
+        let checkedItems = {};
+
+        function loadProgress() {
+            const storedItems = localStorage.getItem(STORAGE_KEY);
+            if (storedItems) {
+                try {
+                    checkedItems = JSON.parse(storedItems);
+                } catch (e) {
+                    // Limpiar si el formato JSON es incorrecto
+                    localStorage.removeItem(STORAGE_KEY);
+                }
+            }
+        }
+
+        function saveProgress() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(checkedItems));
+            renderProgress();
+        }
+
+        function renderChecklist() {
+            checklistDiv.innerHTML = ''; // Limpiar lista
+            
+            DEBUG_STEPS.forEach(step => {
+                const isChecked = checkedItems[step.id] || false;
+                
+                const itemDiv = document.createElement('div');
+                itemDiv.className = `check-item ${isChecked ? 'completed' : ''}`;
+                
+                itemDiv.innerHTML = `
+                    <label class="check-label">
+                        <input type="checkbox" class="check-input" data-id="${step.id}" ${isChecked ? 'checked' : ''}>
+                        <div class="check-content">
+                            <p class="description ${isChecked ? 'completed' : ''}">${step.description}</p>
+                            <code class="file">Archivos: ${step.file}</code>
+                        </div>
+                    </label>
+                `;
+                
+                // Añadir el manejador de eventos (más eficiente que ponerlo en el innerHTML)
+                const checkbox = itemDiv.querySelector('input[type="checkbox"]');
+                checkbox.addEventListener('change', (e) => {
+                    handleCheck(step.id, e.target.checked);
+                });
+                
+                checklistDiv.appendChild(itemDiv);
+            });
+            renderProgress();
+        }
+
+        function handleCheck(id, checked) {
+            checkedItems[id] = checked;
+            saveProgress();
+            
+            // Re-renderizar un solo item para la retroalimentación visual instantánea
+            const itemElement = checklistDiv.querySelector(`.check-item:has(input[data-id="${id}"])`);
+            if (itemElement) {
+                itemElement.classList.toggle('completed', checked);
+                itemElement.querySelector('.description').classList.toggle('completed', checked);
+            }
+        }
+
+        function renderProgress() {
+            const completedCount = Object.values(checkedItems).filter(Boolean).length;
+            const totalCount = DEBUG_STEPS.length;
+            const percentage = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+            
+            progressText.textContent = `Progreso: ${completedCount} de ${totalCount} completados (${percentage}%)`;
+        }
+
+        function handleClearAll() {
+            if (confirm("¿Seguro que quieres borrar todo el progreso de la lista?")) {
+                localStorage.removeItem(STORAGE_KEY);
+                checkedItems = {};
+                renderChecklist(); 
+                renderProgress();
+            }
+        }
+
+        // Inicialización
+        loadProgress();
+        renderChecklist();
+
+        // Event listener para el botón de Reiniciar
+        clearButton.addEventListener('click', handleClearAll);
+
+    </script>
+
+</body>
+</html>
