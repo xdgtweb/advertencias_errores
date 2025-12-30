@@ -1,0 +1,1350 @@
+/* Este bloque representa todos tus archivos React consolidados, con las correcciones aplicadas.
+   Recuerda que este formato no es ejecutable directamente; debe reemplazar el contenido
+   de los archivos originales de tu proyecto React. */
+
+// --- START OF FILE Auth.js ---
+
+//Protegir rutes internes a les que només tenguin accés usuaris registrats
+import { useState,useContext,createContext } from "react";
+import { useContext } from "react"; // Necesitas importar useContext si se usa abajo
+
+const AuthContext = createContext(null);
+
+export const AuthProvider = ({children})=>{
+ const [user,setUser] = useState(null)
+
+
+const login = user=>{
+    setUser(user);
+}
+
+const logout =()=>{
+   setUser(null) 
+}
+
+return (
+
+<AuthContext.Provider value={{user,login,logout}}>{children}</AuthContext.Provider>)
+
+};
+
+export const useAuth = ()=>{
+    // Error de uso de hook: Se debe llamar al hook useContext dentro de useAuth
+    return useContext(AuthContext); 
+}
+
+// --- START OF FILE ButtonElement.js ---
+
+import styled from 'styled-components';
+import { Link } from 'react-scroll';
+
+export const Button = styled(Link)`
+border-radius:50px;
+background:${({primary})=>primary ? '#ac6f82' : '#010606'}};
+white-space:nowrap;
+padding:${({big})=>big ? '14px 48px' : '12px 30px'}};
+color : ${({dark})=>dark ? '#010606' : '#fff'}};
+font-size:${({fontbig})=>fontbig ? '20px' : '16px'}};
+outline:none;
+border:none;
+cursor:pointer;
+display:flex;
+justify-content:center;
+align-items:center;
+transition: all 0.2s ease-in-out;
+
+&:hover{
+    transition:all 0.2s ease-in-out;
+    background:${({primary})=>primary ? '#893f71':'#01BF71'}};
+
+}
+`
+// --- START OF FILE ButtonSliderElement.js ---
+
+import styled from 'styled-components';
+import {Link as LinkR}  from 'react-router-dom';
+
+export const ButtonSlider = styled(LinkR)`
+border-radius:50px;
+background:${({primary})=>primary ? '#ac6f82' : '#010606'}};
+white-space:nowrap;
+padding:${({big})=>big ? '14px 48px' : '12px 30px'}};
+color : ${({dark})=>dark ? '#010606' : '#fff'}};
+font-size:${({fontbig})=>fontbig ? '20px' : '16px'}};
+outline:none;
+border:none;
+cursor:pointer;
+display:flex;
+justify-content:center;
+align-items:center;
+transition: all 0.2s ease-in-out;
+text-decoration:none;
+
+&:hover{
+    transition:all 0.2s ease-in-out;
+    background:${({primary})=>primary ? '#893f71':'#01BF71'}};
+
+}
+`
+// --- START OF FILE index.js (Animal fetch/class component, not heavily corrected) ---
+
+import React, {Component} from 'react'
+import { renderMatches } from 'react-router-dom'
+
+export default class Animal extends Component{
+    constructor(props){
+        super(props);
+        this.state=({ // Usar = {} no ({})
+         id : '',
+         protectora_id:'',
+         tipus_animal_id:'',
+         nom:'',
+         edat:'',
+         caracteristiques:''
+        })
+    }
+
+    obtenirTots=()=>{
+      fetch("http://localhost:8000/api/animals").then(resposta=>{
+        if(resposta.ok){
+         return resposta.json();
+        }else{
+         alert("Error : " +resposta.status);
+        }
+      }).then(data=>{
+        console.log(data);
+      })
+    }
+   
+    render(){
+        return(
+         <div></div>
+        )
+    }
+}
+ 
+// --- START OF FILE backoffice.js ---
+
+import styled from 'styled-components';
+
+
+export const Contenedor = styled.div`
+display:flex;
+height:800px;
+`
+
+export const ContenedorBackOffice=styled.div`
+`;
+
+export const Llista=styled.ul`
+display:inline;
+list-style:none;
+`;
+
+export const Element=styled.li`
+height:50px;
+`;
+
+export const Enllac = styled.a`
+color:#fff;
+display:flex;
+align-items:center;
+text-decoration:none;
+padding-top:15px;
+cursor:pointer;
+margin:5px;
+`
+// --- START OF FILE ContacteElement.js ---
+
+import styled from "styled-components";
+
+export const ContenedorContacte = styled.div`
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+height:650px;
+background-color:#ac6f82;
+`;
+export const ContingutFormulari = styled.div`
+display:flex;
+flex-direction:column;
+justify-content:center;
+`;
+
+export const Form = styled.form`
+height:100%;
+display:flex;
+flex-direction:column;
+justify-content:center;
+`;
+export const FormH4 = styled.h4`
+font-size:30px;
+text-align:center;
+color:#fff;
+`;
+
+export const FormLabel = styled.label`
+height:40px;
+margin-top:20px;
+color:#fff;
+`;
+
+export const FormInput = styled.input`
+width:100%;
+height:20px;
+padding:16px 16px;
+margin-bottom:32px;
+border-radius:4px;
+border-color:#000;
+`;
+
+export const FormButton = styled.button`
+background:#cfa093;
+padding:32px 0px;
+margin-top:20px;
+color:#fff;
+border:none;
+font-size:20px;
+`;
+// --- START OF FILE index.js (Contacte) ---
+
+import React from 'react'
+import { ContenedorContacte,ContingutFormulari,Form,FormH4, FormInput, FormLabel,FormButton } from '../Contacte/ContacteElement';
+import './styles.css';
+const Contacte = () => {
+ 
+  const carrega=()=>{
+    comprovarNom();
+    comprovarEmail();
+    comprovarMissatge();
+  }
+
+  const enviarFormulari=()=>{
+   let respostaNom = comprovarNom();
+   let respostaEmail = comprovarEmail();
+   let respostaMissatge = comprovarMissatge();
+   
+   console.log(respostaEmail);
+
+   if(respostaNom==true && respostaEmail==true && respostaMissatge==true){
+    let nom2 = document.getElementById("nom").value;
+    let email2 = document.getElementById("email").value;
+    let missatge2 = document.getElementById("missatge").value;
+
+   fetch("http://localhost:8000/api/form",{
+    method:"POST",
+    body:"nom="+nom2+"&email="+email2+"&missatge="+missatge2,
+    headers:{
+      "Content-type":"application/x-www-form-urlencoded"
+    }
+   }).then(response=>response.json()).then(data=>{
+    let nom = document.getElementById("nom");
+    let email = document.getElementById("email");
+    let missatge = document.getElementById("missatge");
+    console.log(data);
+    alert("El missatge s´ha enviat correctament");
+    nom.value="";
+    email.value="";
+    missatge.value="";
+    nom.innerText="";
+    email.innerText="";
+    missatge.innerText="";
+    comprovarNom();
+    comprovarMissatge();
+    comprovarEmail();
+   }).catch(error=>{
+    alert(error);
+   })
+   }else{
+   if(respostaNom==false && respostaEmail==false && respostaMissatge==false){
+    alert("Els camps de nom,correu i missatge están buits");
+   }else if(respostaNom==false && respostaEmail==false){
+    alert("Els camps de nom i e-mail están buits.")
+   }else if(respostaNom==false && respostaMissatge==false){
+    alert("Els camps de nom i missatge están buits");
+   }else if(respostaEmail==false && respostaMissatge==false){
+    alert("Els camps email i missatge están buits");
+   }else if(respostaMissatge==false){
+    alert("El camp missatge és buit");
+   
+   }else if(respostaEmail==false){
+    alert("El camp E-Mail és buit");
+   }else if(respostaNom==false){
+    alert("El camp nom és buit");
+   }
+
+  }
+
+
+}
+  
+  const comprovarNom=()=>{
+  
+    console.log("comprobacions");
+    let nom = document.getElementById("nom");
+
+    let nomTrue = false;
+    let nomError = document.getElementById("nomError");
+    //let regexEmail = new Regexp("/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/");
+    if(nom.value.length<=2 || nom.value.trim()===''){
+    /*nom.style.borderColor="red";
+    nom.style.font="black";
+    nom.style.outlineColor="red";*/
+
+    nomTrue=false;
+    nom.classList.add("error");
+    nom.classList.remove("valid");
+    nomError.color=""
+    nomError.innerText="El nom ha de tenir més de 2 carácters";
+    nomError.style.height="auto";
+    }else{
+    nom.classList.add("valid");
+    nom.classList.remove("error");
+    nomTrue=true;
+    nomError.innerText="";
+    nomError.style.height="0px";
+    }
+    return nomTrue;
+ 
+
+
+  }
+
+  const comprovarEmail=()=>{
+    let email = document.getElementById("email");
+    let emailValue = document.getElementById("email").value;
+    let emailTrue=false;
+
+    let regexEmail = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+    let emailError = document.getElementById("emailError");
+    emailError.innerHTML="";
+    if(!emailValue.match(regexEmail)  || email.value.trim()===''){
+      email.classList.add("error");
+      email.classList.remove("valid");
+      emailError.style.height="auto";
+      emailError.innerHTML="El correu no té el format correcte";
+      emailTrue=false;
+    }else{
+      email.classList.add("valid");
+      email.classList.remove("error");
+      emailError.style.height="";
+      emailError.innerHTML="";
+      emailTrue=true;
+    }
+    console.log(emailTrue);
+    return emailTrue;
+  }
+
+  const comprovarMissatge=()=>{
+    let missatge = document.getElementById("missatge");
+
+    let missatgeTrue = false;
+    let missatgeError=document.getElementById("missatgeError");
+    missatgeError.innerHTML="";
+    if(missatge.value.length<=10 || missatge.value.trim()===''){
+      missatge.classList.add("error");
+      missatge.classList.remove("valid");
+     missatgeError.innerHTML="El missatge ha de tenir 10 carácters o més";
+     missatgeTrue = false;
+    }else{
+      missatge.classList.add("valid");
+      missatge.classList.remove("error");
+      missatgeTrue=true;
+      missatgeError.innerHTML="";
+    }
+
+    return missatgeTrue;
+  }
+
+
+const onStart=()=>{
+  console.log("ON START");
+    comprovarNom();
+  }
+
+  
+  return (
+    <>
+      <ContenedorContacte id="contacte">
+            <ContingutFormulari>
+                <Form method="POST" action="#">
+                <FormH4>Contacta´ns</FormH4>
+                <FormLabel htmlFor="nom" >Nom</FormLabel>
+                <FormInput type="text" id="nom" name="nom" onKeyUp={()=>comprovarNom()} className='error'/>
+                <div id="nomError" className='novalid'>El nom ha de tenir més de 2 carácters</div>
+                <FormLabel htmlFor="email">Email</FormLabel>
+                <FormInput type="email" id="email" name="email" onKeyUp={()=>comprovarEmail()} className='error'/>
+                <div id="emailError" className='novalid'>El correu no té el format correcte</div>
+                <FormLabel htmlFor="missatge">Missatge</FormLabel>
+                <FormInput type="text" id="missatge" name="missatge" onKeyUp={()=>comprovarMissatge()} className='error'/>
+                <div id="missatgeError" className='novalid'>El missatge ha de tenir 10 carácters o més</div>
+
+                <FormButton type="button" onClick={()=>enviarFormulari()}>Enviar</FormButton>
+                
+                </Form>
+                </ContingutFormulari>
+      </ContenedorContacte>
+    </>
+  )
+
+
+}
+export default Contacte;
+// --- START OF FILE styles.css (Contacte) ---
+
+.error{
+    outline-color: red;
+}
+
+
+.valid{
+    outline-color: green;
+}
+
+.novalid{
+    color: #ffb3b3;
+    border: 1px solid #ffb3b3;
+    height: 30px;
+    text-align: center;
+}
+// --- START OF FILE Missatges.js ---
+// ... resto de Missatges.js
+// --- START OF FILE Telefons.js ---
+// ... resto de Telefons.js
+// --- START OF FILE Usuaris.js ---
+// ... resto de Usuaris.js
+// --- START OF FILE TipusAnimals.js ---
+// ... resto de TipusAnimals.js
+
+// ... resto de archivos no modificados
+
+// --- START OF FILE EditaCiutat.js ---
+
+import React,{Component} from "react";
+import NavbarLogin from "../../NavbarLoginAdmin";
+import { Container, FormContent, Form, FormLabel, FormInput, FormButton, FormH1, FormSelect, FormDivError } from "../../Registrarse/RegistrarseElement";
+import '../Inserts/styles_error.css';
+import { createUnionTypeNode } from "typescript";
+
+export default class EditaCiutat extends Component{
+// ... constructor
+    constructor(props){
+        super(props);
+        this.state={
+            id:'',
+            usuari_id:'',
+            pais_id:'',
+            nom:''
+        }
+    }
+// ... componentDidMount
+    componentDidMount=()=>{
+        if(this.props.id!==-1){
+         this.getperId();
+        }
+        this.obtenirPaisos();
+        this.validarCiutat();
+
+    }
+// ... resto de metodos
+
+    render(){
+        return(
+            <>
+            <Container>
+            <NavbarLogin/>
+            <FormContent>
+                <Form method="POST" action="#">
+                    <FormLabel htmlFor="id">Id</FormLabel>
+                    <FormInput id="id" name="id" value={this.state.id} disabled/>
+                    <FormLabel htmlFor="usuari_id">Usuari Id</FormLabel>
+                    <FormInput id="usuari_id" value={this.state.usuari_id} disabled/>
+                    <FormLabel htmlFor="pais_id">Pais Id</FormLabel>
+                    <FormSelect id="select" value={this.state.pais_id} onChange={this.onChangePais}>
+                    {/* Eliminamos el 'defaultValue' para evitar warnings con componente controlado */}
+                    </FormSelect> 
+                    <FormLabel htmlFor="nom">Nom</FormLabel>
+                    <FormInput id="nom" name="nom" value={this.state.nom} onChange={this.onChangeNom}/>
+                    <div id="errorCiutat" className="novalid"></div>
+                    <FormButton type="button" onClick={this.editarCiutat}>Edita</FormButton>
+                </Form>
+            </FormContent>
+            </Container>
+            </>
+        )
+    }
+}
+
+
+// --- START OF FILE InsertCiutat.js ---
+
+import React from 'react'
+import { Component } from 'react';
+import NavbarLogin from '../../NavbarLoginAdmin';
+import { Container, FormContent, Form, FormLabel, FormInput, FormButton, FormH1, FormSelect,ContForm } from "../../Registrarse/RegistrarseElement";
+import '../../LoginWeb/styles.css';
+import './validacio.css';
+import './styles_error.css'
+
+export default class InsertCiutat extends Component {
+
+    // ... código
+
+    render() {
+        return (
+            <Container>
+                <NavbarLogin />
+                <FormContent>
+                    <Form method="POST" action="#">
+                        <FormH1>Insert Ciutat</FormH1>
+                        <FormLabel htmlFor="selectpais">Pais</FormLabel>
+
+                        {/* El select solo tiene el valor controlado por el state, no defaultValue */}
+                        <FormSelect id="selectpais" onChange={this.onChangePais} value={this.state.pais_id}></FormSelect> 
+                        <FormLabel htmlFor='nom'>Nom</FormLabel>
+
+                        <FormInput type="text" name="nom" id="nom" onChange={this.onChangeNom} value={this.state.nom} />
+                        <div id="errorNom" className='novalid'></div>
+                        <FormButton type='button' onClick={() => this.insert()}>Enviar</FormButton>
+                    </Form>
+                </FormContent>
+            </Container>
+        )
+    }
+
+}
+// --- START OF FILE CheckListErrors.js (NUEVO COMPONENTE CHECKBOX) ---
+import React, { useState, useEffect } from 'react';
+import { NavLink } from 'react-router-dom';
+
+const DEBUG_STEPS = [
+  // --- Back-end (Causa principal de 500 y consecuentes errores) ---
+  {
+    id: 'b1',
+    description: 'Añadir método `rutesSenseAdmin` en RolController para obtener roles sin Admin, incluyendo el manejo de `try/catch` para prevenir el error 500.',
+    file: 'Backend: app/Http/Controllers/RolController.php',
+  },
+  {
+    id: 'b2',
+    description: 'Definir la ruta `GET roles/rutesSenseAdmin` en `routes/api.php` y asegurar su posición antes de la ruta dinámica con parámetro.',
+    file: 'Backend: routes/api.php',
+  },
+  
+  // --- React Core Warnings / Sintaxis ---
+  {
+    id: 'r1',
+    description: 'Corregir el anidamiento inválido: En los 3 Sidebars, envolver los `<a>` en `<li>`s para eliminar `<a> cannot appear as a descendant of <a>` y fallos de estructura `ul/li`.',
+    file: 'NavbarLoginAdmin/sidebar.js, NavbarLoginProtectora/sidebarProtectora.js, NavbarLoginVeterinari/SidebarVeterinari.js',
+  },
+  {
+    id: 'r2',
+    description: 'Evitar error 404 al inicio: Eliminar la llamada inicial `this.checkEmail()` de `componentDidMount` para que no se ejecute con el email vacío ("undefined").',
+    file: 'Registrarse/index.js (Línea 69)',
+  },
+  {
+    id: 'r3',
+    description: 'Corregir error de prop "select": Eliminar la prop `defaultValue` en los `<FormSelect>` si se usa la prop `value` (Ejemplo: Editar/Insertar Ciudad y Registrarse).',
+    file: 'Registrarse/index.js, EditaCiutat.js',
+  },
+  
+  // --- Styled Components / Prop Warnings (Primary, Dark, Big, FontBig, etc.) ---
+  {
+    id: 'r4',
+    description: 'Corregir props booleanas: En `<ButtonSlider>` (Header e InfoSection), convertir props como `primary`, `dark`, `big`, `fontbig` de booleanos a numéricos (1 ó 0) al pasarse para evitar advertencias en el DOM.',
+    file: 'SliderSection/index.js y InfoSection/index.js',
+  },
+  {
+    id: 'r5',
+    description: 'Corregir Casing: Cambiar la función `dataFetching` a `DataFetching` (PascalCase).',
+    file: 'Fetch/DataFetching.js',
+  },
+];
+
+const CheckListErrors = () => {
+  const [checkedItems, setCheckedItems] = useState({});
+
+  useEffect(() => {
+    const storedItems = localStorage.getItem('errorCheckList');
+    if (storedItems) {
+      setCheckedItems(JSON.parse(storedItems));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('errorCheckList', JSON.stringify(checkedItems));
+  }, [checkedItems]);
+
+  const handleCheck = (id) => {
+    setCheckedItems(prev => ({
+      ...prev,
+      [id]: !prev[id]
+    }));
+  };
+
+  const handleClear = () => {
+    localStorage.removeItem('errorCheckList');
+    setCheckedItems({});
+  };
+
+  const completedCount = Object.values(checkedItems).filter(Boolean).length;
+  const totalCount = DEBUG_STEPS.length;
+  const progressPercentage = Math.round((completedCount / totalCount) * 100);
+
+  return (
+    <div style={{ padding: '20px', maxWidth: '800px', margin: '20px auto', fontFamily: 'Arial, sans-serif', backgroundColor: '#46244C', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0,0,0,0.5)' }}>
+      <h1 style={{ color: '#fff', textAlign: 'center', marginBottom: '20px' }}>Flugpaten Debug Checklist</h1>
+      
+      <div style={{ padding: '10px', backgroundColor: '#712B75', color: '#fff', borderRadius: '4px', marginBottom: '15px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <span>Progreso: {completedCount} de {totalCount} completados ({progressPercentage}%)</span>
+        <button onClick={handleClear} style={{ padding: '8px 12px', backgroundColor: '#ac6f82', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer', fontWeight: 'bold' }}>
+          Reiniciar
+        </button>
+      </div>
+
+      <div style={{ borderTop: '1px solid #ac6f82', paddingTop: '10px' }}>
+        {DEBUG_STEPS.map(step => (
+          <div key={step.id} style={{ 
+            marginBottom: '15px', 
+            padding: '12px', 
+            border: '1px solid #712B75', 
+            borderRadius: '6px',
+            backgroundColor: checkedItems[step.id] ? '#d4edda' : '#f8f9fa', 
+            opacity: checkedItems[step.id] ? 0.9 : 1
+          }}>
+            <label style={{ display: 'flex', alignItems: 'flex-start', cursor: 'pointer', color: '#000' }}>
+              <input
+                type="checkbox"
+                checked={checkedItems[step.id] || false}
+                onChange={() => handleCheck(step.id)}
+                style={{ marginRight: '10px', minWidth: '20px', minHeight: '20px', accentColor: '#46244C' }}
+              />
+              <div style={{ flexGrow: 1 }}>
+                <p style={{ margin: 0, fontWeight: '600' }}>
+                  {step.description}
+                </p>
+                <code style={{ display: 'block', fontSize: '11px', marginTop: '5px', color: '#333' }}>
+                  Archivos: {step.file}
+                </code>
+              </div>
+            </label>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+
+// Incluyo la clase original del checkbox para referencia si es necesaria en tu código:
+/* export default class CheckListErrors extends Component {
+// ... la implementación del CheckListErrors Component como clase
+}
+*/
+// Exportación principal del nuevo componente.
+// Debes agregarlo a tu App.js en una ruta para poder usarlo.
+export default CheckListErrors;
+
+
+// --- START OF FILE Fetch/DataFetching.js (Corrección de Casing) ---
+
+/*import React,{useState,useEffect} from "react";
+
+export default function DataFetching(){ // CAMBIO A PASCAL CASE (DataFetching)
+    const [posts, setPosts]=useState([]);
+    useEffect(()=>{
+     fetch("https://jsonplaceholder.typicode.com/posts").then(response=>response.json())
+
+     }).catch(error=>{
+        console.log(error);
+     })
+;
+    return(
+        <div>
+            <ul>
+               {
+                posts.map(post=><li key={post.id}>{post.title}</li>)
+               } 
+            </ul>
+        </div>
+    )
+
+}*/
+
+
+// --- START OF FILE NavbarLoginAdmin/sidebar.js (Corrección Anidamiento) ---
+// Modificación para asegurar <li> dentro de <ul>
+
+import React, { useState } from 'react'
+import { SidebarContainer, Icon, CloseIcon, SideBarLink, SideBtnWrap, SideBarRoute, SideBarWrapper, SideBarMenu } from '../Sidebar/SidebarElement'
+import { MobileIcon, NavItem } from '../Navbar/NavbarElements'
+import { NavLink } from "react-router-dom";
+import { FaBars } from 'react-icons/fa';
+import './barraresponsive.css'
+
+const sidebar = () => {
+
+    const logout=()=>{
+
+    fetch("http://localhost:8000/api/logout", {
+        method: "POST",
+        headers: {
+            "Accept": "application/json",
+            "Authorization": "Bearer " + localStorage.getItem("token")
+        }
+    }).then(response => {
+        if (response.status == 200 || response.status == 204) {
+            alert("Logout correcte");
+            window.location.assign("/");
+        } else {
+            alert("Error: " + response.statusText);
+        }
+    }).catch(error => {
+        alert("S´ha produït un error: " + error);
+    })
+}
+
+
+console.log("SIDEBAR");
+
+
+return (
+    <aside className='sidebar'>
+        <MobileIcon>
+            <FaBars />
+        </MobileIcon>
+        <nav className='barraNav'>
+            <ul>
+                <li><a className='enllac' href="/opcionsAdminAnimals"
+                    smooth={true}
+                    duration={500}
+                    spy={true}
+                    exact='true'
+                    offset={-80}>
+                    Animals
+                </a></li>
+
+                <li><a className='enllac' href="/opcionsAdminCiutats"
+                    smooth={true}
+                    duration={500}
+                    spy={true}
+                    exact='true'
+                    offset={-80}>
+                    Ciutats
+                </a></li>
+                <li><a className="enllac" href="/opcionsAdminEnfermetats"
+                    smooth={true}
+                    duration={500}
+                    spy={true}
+                    exact='true'
+                    offset={-80}>
+                    Enfermetats</a></li>
+                <li><a className="enllac" href="/opcionsAdminMedicacions"
+                    smooth={true}
+                    duration={500}
+                    spy={true}
+                    exact='true'
+                    offset={-80}>Medicacions</a></li>
+                <li><a className="enllac" href="/opcionsAdminPublicacions"
+                    smooth={true}
+                    duration={500}
+                    spy={true}
+                    exact='true'
+                    offset={-80}>Publicacions</a></li>
+
+                <li><a className="enllac" href="/admin/vistes"
+                    smooth={true}
+                    duration={500}
+                    spy={true}
+                    exact='true'
+                    offset={-80}
+                    >Vistes</a></li>
+
+                <li><a className="enllac" href="/opcionsAdminIdiomes"
+                    smooth={true}
+                    duration={500}
+                    spy={true}
+                    exact='true'
+                    offset={-80}>Idiomes</a></li>
+                <li><a className="enllac" href="/opcionsAdminUsuaris"
+                    smooth={true}
+                    duration={500}
+                    spy={true}
+                    exact='true'
+                    offset={-80}>Usuaris</a></li>
+
+                <li><a className="enllac" onClick={() => logout()}>Logout</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+)
+
+}
+export default sidebar;
+
+
+// --- START OF FILE NavbarLoginProtectora/sidebarProtectora.js (Corrección Anidamiento) ---
+
+import React, { useState } from 'react'
+import { SidebarContainer, Icon, CloseIcon, SideBarLink, SideBtnWrap, SideBarRoute, SideBarWrapper, SideBarMenu } from '../Sidebar/SidebarElement'
+import { MobileIcon, NavItem } from '../Navbar/NavbarElements'
+import { NavLink } from "react-router-dom";
+import { FaBars } from 'react-icons/fa';
+import '../NavbarLoginAdmin//barraresponsive.css'
+const SidebarProtectora = () => {
+
+    const logout=()=>{
+
+    fetch("http://localhost:8000/api/logout", {
+        method: "POST",
+        headers: {
+            "Accept": "application/json",
+            "Authorization": "Bearer " + localStorage.getItem("token")
+        }
+    }).then(response => {
+        if (response.status == 200 || response.status == 204) {
+            alert("Logout correcte");
+            window.location.assign("/");
+        } else {
+            alert("Error: " + response.statusText);
+        }
+    }).catch(error => {
+        alert("S´ha produït un error: " + error);
+    })
+}
+
+
+console.log("SIDEBAR");
+
+
+return (
+    <aside className='sidebar'>
+        <MobileIcon>
+            <FaBars />
+        </MobileIcon>
+        <nav className='barraNav'>
+            <ul>
+                <li><a className='enllac' href="/"
+                    smooth={true}
+                    duration={500}
+                    spy={true}
+                    exact='true'
+                    offset={-80}>
+                    Animals
+                </a></li>
+
+                <li><a className='enllac' href="/"
+                    smooth={true}
+                    duration={500}
+                    spy={true}
+                    exact='true'
+                    offset={-80}>
+                    Enfermetats
+                </a></li>
+                <li><a className="enllac" href="/"
+                    smooth={true}
+                    duration={500}
+                    spy={true}
+                    exact='true'
+                    offset={-80}>
+                    Medicacions</a></li>
+                    <li><a className="enllac" href="/"
+                    smooth={true}
+                    duration={500}
+                    spy={true}
+                    exact='true'
+                    offset={-80}>
+                    Publicacions</a></li>
+                    <li><a className="enllac" href="/"
+                    smooth={true}
+                    duration={500}
+                    spy={true}
+                    exact='true'
+                    offset={-80}>
+                    Rutes</a></li>
+                <li><a className="enllac" href="/protectora/vistes"
+                    smooth={true}
+                    duration={500}
+                    spy={true}
+                    exact='true'
+                    offset={-80}>Vistes</a></li>
+                    <li><a className="enllac" href="/"
+                    smooth={true}
+                    duration={500}
+                    spy={true}
+                    exact='true'
+                    offset={-80}>Usuaris</a></li>
+                <li><a className="enllac" href="/opcionsAdminPublicacions"
+                    smooth={true}
+                    duration={500}
+                    spy={true}
+                    exact='true'
+                    offset={-80}>El meu Usuari</a></li>
+
+                <li><a className="enllac" onClick={() => logout()}>Logout</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+)
+
+}
+export default SidebarProtectora;
+
+// --- START OF FILE NavbarLoginVeterinari/SidebarVeterinari.js (Corrección Anidamiento) ---
+
+import React, { useState } from 'react'
+import { SidebarContainer, Icon, CloseIcon, SideBarLink, SideBtnWrap, SideBarRoute, SideBarWrapper, SideBarMenu } from '../Sidebar/SidebarElement'
+import { MobileIcon, NavItem } from '../Navbar/NavbarElements'
+import { NavLink } from "react-router-dom";
+import { FaBars } from 'react-icons/fa';
+import '../NavbarLoginAdmin//barraresponsive.css'
+const SidebarVeterinari = () => {
+
+    const logout=()=>{
+
+    fetch("http://localhost:8000/api/logout", {
+        method: "POST",
+        headers: {
+            "Accept": "application/json",
+            "Authorization": "Bearer " + localStorage.getItem("token")
+        }
+    }).then(response => {
+        if (response.status == 200 || response.status == 204) {
+            alert("Logout correcte");
+            window.location.assign("/");
+        } else {
+            alert("Error: " + response.statusText);
+        }
+    }).catch(error => {
+        alert("S´ha produït un error: " + error);
+    })
+}
+
+
+console.log("SIDEBAR");
+
+
+return (
+    <aside className='sidebar'>
+        <MobileIcon>
+            <FaBars />
+        </MobileIcon>
+        <nav className='barraNav'>
+            <ul>
+                <li><a className='enllac' href="/veterinari/animals"
+                    smooth={true}
+                    duration={500}
+                    spy={true}
+                    exact='true'
+                    offset={-80}>
+                    Animals
+                </a></li>
+
+                <li><a className='enllac' href="/veterinari/efectessecundaris"
+                    smooth={true}
+                    duration={500}
+                    spy={true}
+                    exact='true'
+                    offset={-80}>
+                    Enfermetats
+                </a></li>
+                <li><a className="enllac" href="/"
+                    smooth={true}
+                    duration={500}
+                    spy={true}
+                    exact='true'
+                    offset={-80}>
+                    Medicacions</a></li>
+                <li><a className="enllac" href="/vistes"
+                    smooth={true}
+                    duration={500}
+                    spy={true}
+                    exact='true'
+                    offset={-80}>Vistes</a></li>
+                <li><a className="enllac" href="/opcionsAdminPublicacions"
+                    smooth={true}
+                    duration={500}
+                    spy={true}
+                    exact='true'
+                    offset={-80}>El meu Usuari</a></li>
+
+                <li><a className="enllac" onClick={() => logout()}>Logout</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+)
+
+}
+export default SidebarVeterinari;
+
+
+// --- START OF FILE Registrarse/index.js (Funciones críticas) ---
+
+import React, { Component } from "react";
+import { Container, FormWrap, Form, FormContent, Icon, FormH1, FormLabel, FormInput, FormButton, FormRadio, FormLabelRadio, FormDivError,FormSelect,FormP, FormOption } from './RegistrarseElement';
+import Footer from "../Footer";
+import { forEachChild } from "typescript";
+import '../LoginWeb/styles.css'
+export default class Registrarse extends Component {
+
+  constructor(props) {
+    super(props);
+    const data = new Date();
+    const formatData = `${data.getFullYear()}-${data.getMonth() + 1}-${data.getDate()}`;
+    this.state = {
+      nom: '',
+      primerllinatge: '',
+      segonllinatge: '',
+      email: '',
+      contrasenya: '',
+      dataNaixement: '',
+      token: '0',
+      foto: null,
+      protectora: '',
+      data: formatData,
+      registrat: false,
+      id_roles:'Particular'
+    }
+
+  }
+// ...
+// ... onChange methods
+
+componentDidMount=()=>{
+  this.carregarRols();
+  this.comprovarNom();
+  this.comprovarPrimerLlinatge();
+  this.comprovarSegonLlinatge();
+  this.comprovarContrasenya();
+  this.comprovarCorreu();
+  // Se ha quitado this.checkEmail() para evitar el error 404 al montar
+}
+// ...
+// ... método 'registre'
+
+checkEmail=(email)=>{
+    if (!email) return; // Aseguramos no hacer fetch si el email está vacío al iniciar
+
+    let emailExists = document.getElementById("emailError");
+    let btnEnviar = document.getElementById("btEnviar");
+    emailExists.innerHTML="";
+    fetch("http://localhost:8000/api/usuaris/email/"+email).then(response=>response.json()).then(data=>{
+      if(data.missatge=="Cap usuari existeix amb aquest correu"){
+        console.log("Cap usuari existeix amb aquest correu");
+        btnEnviar.style.display="block";
+        emailExists.innerHTML="";
+
+      }else{
+           emailExists.innerHTML="Correu Existeix"
+           btnEnviar.style.display="none";
+      }
+    }).catch(error=>{
+     console.log(error);
+    })
+  }
+
+carregarRols=()=>{
+    let selectRol = document.getElementById("rol");
+    fetch("http://localhost:8000/api/roles/rutesSenseAdmin",{
+      headers:{
+        "Accept":"application/json",
+        "Authorization":"Bearer "+localStorage.getItem("token")
+        
+      }
+    }).then(response => {
+        // Manejo de error 500
+        if (!response.ok) {
+            console.error(`Error HTTP ${response.status} en la carga de roles.`);
+            throw new Error("Error de conexión o de servidor"); 
+        }
+        return response.json();
+    }).then(data=>{
+      
+        if (Array.isArray(data)) { // Protección de TypeError: forEach is not a function
+            let contador=0;
+            data.forEach(rol => {
+                contador++;
+                let option = document.createElement("option");
+                option.append(rol.nom);
+                option.setAttribute("id",rol.nom);
+                option.setAttribute("name",rol.nom);
+                option.setAttribute("value",rol.nom);
+                selectRol.append(option);
+            });
+             // Si el primer rol es Particular, aseguramos que esté seleccionado.
+             this.setState({id_roles: data[0].nom});
+        }
+      
+    }).catch(error=>{
+        console.error("Fallo durante la obtención/procesamiento de roles:", error);
+    });
+  }
+
+// ...
+// ... resto de lógica de validación
+
+  render() {
+    return (
+      <>
+        <Container id="registre">
+          <FormWrap>
+            <Icon to="/">FLUGPATEN</Icon>
+            <FormContent>
+              <Form method="POST" action="#">
+// ...
+                <FormLabel>Rol</FormLabel>
+                {/* SOLUCIÓN R3: Solo usamos 'value' ya que el componente está controlado */}
+                <FormSelect id="rol" onChange={this.onChangeRol} onBlur={this.comprovarOpcioRol} value={this.state.id_roles}>
+                </FormSelect>
+                <FormDivError id="errorOpcio"></FormDivError>
+
+                <FormButton id="btEnviar" type="button" onClick={() => { this.registre() }}>Registrar-se</FormButton>
+                </Form>
+// ...
+            </FormContent>
+          </FormWrap>
+        </Container>
+        <Footer/>
+
+      </>
+    )
+  }
+}
+// --- END OF FILE Registrarse/index.js ---
+
+
+// --- START OF FILE SliderSection/index.js (Corrección Props) ---
+import React,{useState} from 'react'
+import { SliderContainer, SliderBg, VideoBg, SliderContent, SliderH1, SliderP, SliderBtnWrapper, ArrowForward, ArrowRight } from './SliderSection'
+import Video from '../../videos/video2.mp4'
+import { ButtonSlider } from '../ButtonSliderElement'
+
+const SliderSection = () => {
+
+    const [hover,setHover] = useState(false);
+
+    const onHover=()=>{
+        setHover(!hover);
+    }
+
+   const rutaBoto=()=>{
+        window.location.href="/registre";
+    }
+    return (
+        <SliderContainer id="home">
+            <SliderBg>
+                <VideoBg autoPlay muted loop src={Video} type='video/mp4' />
+                <SliderContent>
+                    <SliderH1>
+                        Ajuda´ns a dur els nostres animals a les seves families definitives
+                    </SliderH1>
+                    <SliderP>
+                        Quan viatgis a Alemania, sigui per el motiu que sigui, pots endur-te´n un animal de companyia i ajudar-lo
+                        a reunir-se amb la seva familia definitiva.
+                    </SliderP>
+                    <SliderBtnWrapper>
+                        {/* CORRECCIÓN R4: Usamos 1/0 para booleanos de estilo en el componente que se resuelve al DOM */}
+                        <ButtonSlider to="/registre" onMouseEnter={onHover} 
+                        primary={1} 
+                        dark={0} 
+                        big={1} 
+                        fontbig={1}>
+                            Comença avui {hover ? <ArrowForward /> : <ArrowRight />}
+                        </ButtonSlider>
+                    </SliderBtnWrapper>
+                </SliderContent>
+            </SliderBg>
+        </SliderContainer>
+    )
+}
+
+export default SliderSection
+// --- END OF FILE SliderSection/index.js ---
+
+
+// --- START OF FILE InfoSection/index.js (Corrección Props) ---
+
+import React from 'react'
+import { ButtonSlider } from '../ButtonSliderElement'
+import {
+    InfoContainer, InfoWrapper, InfoRow, Column1, TextWrapper, TopLine,
+    Heading, Subtitle, BtnWrap, Column2, ImgWrap, Img
+} from './InfoElements';
+
+const InfoSection = ({ lightBg, id, imgStart,esSegon, topLine, lightText, headline, darkText, description, buttonLabel, img, alt,primary,dark,dark2 }) => {
+    return (
+        <>
+            <InfoContainer lightBg={lightBg} id={id}>
+                <InfoWrapper>
+                    <InfoRow imgStart={imgStart}>
+                        <Column1>
+                            <TextWrapper>
+                                <TopLine esSegon={esSegon}>
+                                    {topLine}
+                                </TopLine>
+                                <Heading lightText={lightText}>
+                                    {headline}
+                                </Heading>
+                                <Subtitle darkText={darkText}>
+                                    {description}
+                                </Subtitle>
+                                <BtnWrap>
+                                    {/* CORRECCIÓN R4: Usamos 1/0 para props de estilo */}
+                                    <ButtonSlider to="/registre"
+                                        smooth={true}
+                                        duration={500}
+                                        spy={true}
+                                        exact="true"
+                                        offset={-80}
+                                        primary={primary ? 1 : 0}
+                                        dark={dark ? 1 : 0}
+                                        dark2={dark2 ? 1 : 0}
+                                    >{buttonLabel}</ButtonSlider>
+                                </BtnWrap>
+                            </TextWrapper>
+                        </Column1>
+                        <Column2>
+                            <ImgWrap>
+                                <Img src={img} alt={alt} float={true} />
+                            </ImgWrap>
+                        </Column2>
+                    </InfoRow>
+                </InfoWrapper>
+            </InfoContainer>
+        </>
+    )
+}
+
+export default InfoSection;
+// --- END OF FILE InfoSection/index.js ---
+
+
+// --- START OF FILE Debug/CheckListErrors.js (Checklist para el amigo) ---
+
+import React, { useState, useEffect } from 'react';
+// Asumiendo que NavLink o styled components no son necesarios aquí
+
+const DEBUG_STEPS = [
+  // --- Back-end (Causa principal de 500 y consecuentes errores) ---
+  {
+    id: 'b1',
+    description: 'Añadir método `rutesSenseAdmin` en RolController para obtener roles sin Admin, incluyendo el manejo de `try/catch` para prevenir el error 500.',
+    file: 'Backend: app/Http/Controllers/RolController.php',
+  },
+  {
+    id: 'b2',
+    description: 'Definir la ruta `GET roles/rutesSenseAdmin` en `routes/api.php` y asegurar su posición antes de la ruta dinámica con parámetro.',
+    file: 'Backend: routes/api.php',
+  },
+  
+  // --- React Core Warnings / Sintaxis ---
+  {
+    id: 'r1',
+    description: 'Corregir el anidamiento inválido: En los 3 Sidebars, envolver los `<a>` en `<li>`s para eliminar `<a> cannot appear as a descendant of <a>` y fallos de estructura `ul/li`.',
+    file: 'NavbarLoginAdmin/sidebar.js, NavbarLoginProtectora/sidebarProtectora.js, NavbarLoginVeterinari/SidebarVeterinari.js',
+  },
+  {
+    id: 'r2',
+    description: 'Evitar error 404 al inicio: Eliminar la llamada inicial `this.checkEmail()` de `componentDidMount` para que no se ejecute con el email vacío ("undefined").',
+    file: 'Registrarse/index.js (Línea 69)',
+  },
+  {
+    id: 'r3',
+    description: 'Corregir error de prop "select": Eliminar la prop `defaultValue` en los `<FormSelect>` si se usa la prop `value` (Ejemplo: Editar/Insertar Ciudad y Registrarse).',
+    file: 'Registrarse/index.js, EditaCiutat.js',
+  },
+  
+  // --- Styled Components / Prop Warnings (Primary, Dark, Big, FontBig, etc.) ---
+  {
+    id: 'r4',
+    description: 'Corregir props booleanas: En `<ButtonSlider>` (Header e InfoSection), convertir props como `primary`, `dark`, `big`, `fontbig` de booleanos a numéricos (1 ó 0) al pasarse para evitar advertencias en el DOM.',
+    file: 'SliderSection/index.js y InfoSection/index.js',
+  },
+  {
+    id: 'r5',
+    description: 'Corregir Casing: Cambiar la función `dataFetching` a `DataFetching` (PascalCase).',
+    file: 'Fetch/DataFetching.js',
+  },
+];
+
+const CheckListErrors = () => {
+  const [checkedItems, setCheckedItems] = useState({});
+
+  useEffect(() => {
+    const storedItems = localStorage.getItem('errorCheckList');
+    if (storedItems) {
+      setCheckedItems(JSON.parse(storedItems));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('errorCheckList', JSON.stringify(checkedItems));
+  }, [checkedItems]);
+
+  const handleCheck = (id) => {
+    setCheckedItems(prev => ({
+      ...prev,
+      [id]: !prev[id]
+    }));
+  };
+
+  const handleClear = () => {
+    localStorage.removeItem('errorCheckList');
+    setCheckedItems({});
+  };
+
+  const completedCount = Object.values(checkedItems).filter(Boolean).length;
+  const totalCount = DEBUG_STEPS.length;
+  const progressPercentage = Math.round((completedCount / totalCount) * 100);
+
+  return (
+    <div style={{ padding: '20px', maxWidth: '800px', margin: '20px auto', fontFamily: 'Arial, sans-serif', backgroundColor: '#46244C', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0,0,0,0.5)' }}>
+      <h1 style={{ color: '#fff', textAlign: 'center', marginBottom: '20px' }}>Flugpaten Debug Checklist</h1>
+      
+      <div style={{ padding: '10px', backgroundColor: '#712B75', color: '#fff', borderRadius: '4px', marginBottom: '15px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <span>Progreso: {completedCount} de {totalCount} completados ({progressPercentage}%)</span>
+        <button onClick={handleClear} style={{ padding: '8px 12px', backgroundColor: '#ac6f82', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer', fontWeight: 'bold' }}>
+          Reiniciar
+        </button>
+      </div>
+
+      <div style={{ borderTop: '1px solid #ac6f82', paddingTop: '10px' }}>
+        {DEBUG_STEPS.map(step => (
+          <div key={step.id} style={{ 
+            marginBottom: '15px', 
+            padding: '12px', 
+            border: '1px solid #712B75', 
+            borderRadius: '6px',
+            backgroundColor: checkedItems[step.id] ? '#d4edda' : '#f8f9fa', 
+            opacity: checkedItems[step.id] ? 0.9 : 1
+          }}>
+            <label style={{ display: 'flex', alignItems: 'flex-start', cursor: 'pointer', color: '#000' }}>
+              <input
+                type="checkbox"
+                checked={checkedItems[step.id] || false}
+                onChange={() => handleCheck(step.id)}
+                style={{ marginRight: '10px', minWidth: '20px', minHeight: '20px', accentColor: '#46244C' }}
+              />
+              <div style={{ flexGrow: 1 }}>
+                <p style={{ margin: 0, fontWeight: '600' }}>
+                  {step.description}
+                </p>
+                <code style={{ display: 'block', fontSize: '11px', marginTop: '5px', color: '#333' }}>
+                  Archivos: {step.file}
+                </code>
+              </div>
+            </label>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default CheckListErrors;
+
+// --- FIN DEL ARCHIVO CONSOLIDADO ---
